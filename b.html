@@ -1,0 +1,181 @@
+<html>
+<head>
+    <style>
+        .a4-page {
+            width: 210mm;
+            height: 297mm;
+            margin: 20px auto;
+            padding: 20mm;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            position: relative;
+        }
+        body {
+            background-color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Times New Roman', serif;
+        }
+        h1, p {
+            margin: 0 0 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f4b084;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+        .header {
+            position: absolute;
+            top: 10mm;
+            left: 20mm;
+            right: 20mm;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header img {
+            max-height: 40px;
+        }
+.page-container {
+            width: 210mm;
+            height: 297mm;
+            overflow: auto;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+.content {
+            height: calc(297mm - 40mm); /* Adjust for header and footer */
+            overflow-y: auto;
+        }
+        .footer {
+            position: absolute;
+            bottom: 10mm;
+            left: 20mm;
+            right: 20mm;
+            text-align: center;
+            font-size: 12px;
+        }
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .pagination button {
+            padding: 5px 10px;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+/* Add rules to handle page breaks */
+        @media print {
+            .a4-page {
+                page-break-after: always;
+            }
+            table tr {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="a4-page page-container">
+        <div class="header">
+            <img src="logo.png" alt="Logo">
+            <h2>Document Title</h2>
+        </div>
+        <h1>Sample Document</h1>
+        <p>This is a sample paragraph demonstrating the appearance of content within 
+          an A4-sized page layout.</p>
+        <p>Additional text can be included to further illustrate the layout and styling.</p>
+        <table id="data-table">
+            <thead>
+                <tr>
+                    <th>Sno</th>
+                    <th>Step</th>
+                    <th>Expected Result</th>
+                    <th>Actual Result</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <div class="pagination" id="pagination"></div>
+        <div class="footer">
+            Page <span id="current-page">1</span> of <span id="total-pages"></span>
+        </div>
+    </div>
+    <script>
+        const rowsPerPage = 50; // Number of rows per page
+        const totalRecords = 2000; // Total number of records
+        const tableBody = document.getElementById('data-table').querySelector('tbody');
+        const pagination = document.getElementById('pagination');
+        const currentPageElement = document.getElementById('current-page');
+        const totalPagesElement = document.getElementById('total-pages');
+
+        // Generate table data
+        const records = Array.from({ length: totalRecords }, (_, i) => ({
+            sno: i + 1,
+            step: `Step ${i + 1}`,
+            expected: `Expected Result ${i + 1}`,
+            actual: `Actual Result ${i + 1}`,
+            status: i % 2 === 0 ? 'Pass' : 'Fail'
+        }));
+
+        function renderTable(page) {
+            tableBody.innerHTML = '';
+            const start = (page - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            const pageRecords = records.slice(start, end);
+
+            pageRecords.forEach(record => {
+                const row = `<tr>
+                    <td>${record.sno}</td>
+                    <td>${record.step}</td>
+                    <td>${record.expected}</td>
+                    <td>${record.actual}</td>
+                    <td>${record.status}</td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            });
+
+            // Update current page in footer
+            currentPageElement.textContent = page;
+        }
+
+        function renderPagination() {
+            const totalPages = Math.ceil(totalRecords / rowsPerPage);
+            totalPagesElement.textContent = totalPages;
+            pagination.innerHTML = '';
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                button.onclick = () => renderTable(i);
+                pagination.appendChild(button);
+            }
+        }
+
+        // Initialize the table and pagination
+        renderTable(1);
+        renderPagination();
+    </script>
+</body>
+</html>

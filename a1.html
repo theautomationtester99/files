@@ -1,0 +1,124 @@
+<html>
+<head>
+    <style>
+        .a4-page {
+            width: 210mm;
+            height: 297mm;
+            margin: 20px auto;
+            padding: 20mm;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            position: relative;
+            page-break-after: always; /* Force page break */
+        }
+        body {
+            background-color: #e0e0e0;
+            display: flex;
+            flex-direction: column; /* Stack A4 pages */
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Times New Roman', serif;
+        }
+        h1, p {
+            margin: 0 0 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            page-break-inside: avoid; /* Avoid page breaks inside tables */
+        }
+        th, td {
+            border: 1px solid #ddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f4b084;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+        .header {
+            position: absolute;
+            top: 10mm;
+            left: 20mm;
+            right: 20mm;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header img {
+            max-height: 40px;
+        }
+        .footer {
+            position: absolute;
+            bottom: 10mm;
+            left: 20mm;
+            right: 20mm;
+            text-align: center;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="a4-page">
+        <div class="header">
+            <img src="logo.png" alt="Logo">
+            <h2>Document Title</h2>
+        </div>
+        <h1>Sample Document</h1>
+        <p>This is a sample paragraph demonstrating the appearance of content within 
+          an A4-sized page layout.</p>
+        <p>Additional text can be included to further illustrate the layout and styling.</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sno</th>
+                    <th>Step</th>
+                    <th>Expected Result</th>
+                    <th>Actual Result</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Login to the system</td>
+                    <td>User is logged in successfully</td>
+                    <td>User is logged in successfully</td>
+                    <td>Pass</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Navigate to dashboard</td>
+                    <td>Dashboard loads correctly</td>
+                    <td>Dashboard loads correctly</td>
+                    <td>Pass</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Submit a form</td>
+                    <td>Form is submitted successfully</td>
+                    <td>Error on submission</td>
+                    <td>Fail</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="footer">
+            Page 1 of 1
+        </div>
+    </div>
+    <div class="a4-page">
+        <!-- More content dynamically added here -->
+        <p>Continuing content for the next page.</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<html>
+<head>
+    <style>
+        .a4-page {
+            width: 210mm;
+            height: 297mm;
+            margin: 20px auto;
+            padding: 20mm;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            position: relative;
+            overflow: hidden;
+        }
+        body {
+            background-color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            font-family: 'Times New Roman', serif;
+        }
+        h1, p {
+            margin: 0 0 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f4b084;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+        .header {
+            position: absolute;
+            top: 10mm;
+            left: 20mm;
+            right: 20mm;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header img {
+            max-height: 40px;
+        }
+        .footer {
+            position: absolute;
+            bottom: 10mm;
+            left: 20mm;
+            right: 20mm;
+            text-align: center;
+            font-size: 12px;
+        }
+        /* Page break simulation */
+        .page-container {
+            width: 210mm;
+            height: 297mm;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        .content {
+            height: calc(297mm - 40mm); /* Adjust for header and footer */
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="a4-page page-container">
+        <div class="header">
+            <img src="logo.png" alt="Logo">
+            <h2>Document Title</h2>
+        </div>
+        <div class="content">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sno</th>
+                        <th>Step</th>
+                        <th>Expected Result</th>
+                        <th>Actual Result</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Add your 2000 rows dynamically -->
+                    <!-- Here is a sample -->
+                    <tr>
+                        <td>1</td>
+                        <td>Step 1</td>
+                        <td>Expected Result 1</td>
+                        <td>Actual Result 1</td>
+                        <td>Pass</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Step 2</td>
+                        <td>Expected Result 2</td>
+                        <td>Actual Result 2</td>
+                        <td>Fail</td>
+                    </tr>
+                    <!-- Repeat rows here -->
+                </tbody>
+            </table>
+        </div>
+        <div class="footer">
+            Page 1 of X
+        </div>
+    </div>
+</body>
+</html>
