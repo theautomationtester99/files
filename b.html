@@ -56,14 +56,14 @@
         .header img {
             max-height: 40px;
         }
-.page-container {
+        .page-container {
             width: 210mm;
             height: 297mm;
-            overflow: auto;
+            overflow: inherit;
             margin-bottom: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
-.content {
+        .content {
             height: calc(297mm - 40mm); /* Adjust for header and footer */
             overflow-y: auto;
         }
@@ -123,6 +123,7 @@
             Page <span id="current-page">1</span> of <span id="total-pages"></span>
         </div>
     </div>
+    
     <script>
         const rowsPerPage = 50; // Number of rows per page
         const totalRecords = 2000; // Total number of records

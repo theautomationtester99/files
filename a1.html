@@ -3,7 +3,7 @@
     <style>
         .a4-page {
             width: 210mm;
-            height: 297mm;
+            height: 279mm;
             margin: 20px auto;
             padding: 20mm;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -117,8 +117,46 @@
         </div>
     </div>
     <div class="a4-page">
+        <div class="header">
+            <img src="logo.png" alt="Logo">
+            <h2>Document Title</h2>
+        </div>
         <!-- More content dynamically added here -->
         <p>Continuing content for the next page.</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sno</th>
+                    <th>Step</th>
+                    <th>Expected Result</th>
+                    <th>Actual Result</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Login to the system</td>
+                    <td>User is logged in successfully</td>
+                    <td>User is logged in successfully</td>
+                    <td>Pass</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Navigate to dashboard</td>
+                    <td>Dashboard loads correctly</td>
+                    <td>Dashboard loads correctly</td>
+                    <td>Pass</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Submit a form</td>
+                    <td>Form is submitted successfully</td>
+                    <td>Error on submission</td>
+                    <td>Fail</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </body>
 </html>
