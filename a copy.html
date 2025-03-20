@@ -27,7 +27,7 @@
         #imga { 
             margin-top: 10px;         
             margin-right: 20px;            
-            max-width:1000px;
+            max-width:500px;
         }
         #tcid {
             /* margin: auto; */
@@ -66,7 +66,7 @@
             text-align: center;     
         }
         table {
-            width: 98.6%;
+            width: 100%;
             border-collapse: separate !important;;
             border-radius: 10px;
             margin-left: 0.7%;
@@ -78,6 +78,7 @@
             -webkit-box-shadow: 0 1px 1px #ccc;
             -moz-box-shadow: 0 1px 1px #ccc;
             box-shadow: 0 1px 1px #ccc;
+            table-layout: auto;
         }
         th, td {
             /* border: 1px solid #ccc; */
@@ -116,28 +117,21 @@
             font-size: xx-large; 
             font-weight: bolder;
             color: red    
-        }
-        @page {
-            @top-right{
-                content: header;
+        }        
+        @media print {
+            table {
+            max-width: 100%; /* Prevent table from exceeding PDF dimensions */
             }
-            @bottom-center {
-                content: 'Here comes a simple footer text';
-            }
-            margin-top: 10.0mm;
-            margin-right: 10.0mm;
-            margin-bottom: 20.0mm;
-            margin-left: 10.0mm;
         }
        
     </style>
 </head>
 <body>
 
-<header id="divHeader">
+<!-- <header id="divHeader">
     <img id="logo" src="logo.png" alt="Logo">
     <h1 id = "tcid">TCID-11221121</h1>
-</header>
+</header> -->
 
 <div class="testsummaryrow">
     <div class="testdesc">
@@ -203,7 +197,7 @@
             <td>Actual Result 3</td>
             <td>Pass</td>
         </tr>
-        tr>
+        <tr>
             <td>close browser</td>
             <td colspan="2">Expected Result 3</td>            
             <td>Pass</td>
