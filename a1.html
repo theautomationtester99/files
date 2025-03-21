@@ -1,161 +1,226 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Page</title>
     <style>
-        .a4-page {
-            width: 210mm;
-            height: 279mm;
-            margin: 20px auto;
-            padding: 20mm;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            box-sizing: border-box;
-            background-color: #ffffff;
-            border: 1px solid #ddd;
-            position: relative;
-            page-break-after: always; /* Force page break */
-        }
         body {
-            background-color: #e0e0e0;
+            font-family: Arial, sans-serif;
+        }
+        header {
             display: flex;
-            flex-direction: column; /* Stack A4 pages */
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            font-family: 'Times New Roman', serif;
+            height: auto;
+            justify-content: space-between;
+            align-items:center;            
+            /* background-color: #f8f8f8; */
+            border-bottom: 2px solid #413a97;
         }
-        h1, p {
-            margin: 0 0 10px;
+        #logo {           
+            /* margin-right: auto;             */
+            max-width:150px;
         }
-        table {
+        #browsimg {           
+            /* margin-right: auto;             */
+            max-width:50px;
+        }
+        #imga { 
+            margin-top: 10px;         
+            margin-right: 20px;            
+            max-width:500px;
+        }
+        #tcid {
+            /* margin: auto; */
+            margin-left: auto;
+            margin-right: 0;
+        }
+        .testsummaryrow {
+            display: flex;
+            /* border: 1px solid #413a97; */
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding: 5px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        .testdesc {
+            flex: 4;
+            padding: 5px;            
+            background-color: beige;
+            margin: 5px;
+            border-radius: 6px;   
+        }
+        .testenv {
+            flex: 1;
+            padding: 10px 0 10px 0;
+            background-color: beige;
+            margin: 5px;
+            border-radius: 6px;
+            text-align: center;            
+        }
+        .teststatus {
+            flex: 1;
+            padding: 40px 5px 0 5px;
+            background-color: beige;
+            margin: 5px;
+            border-radius: 6px;
+            text-align: center;     
+        }
+        /* table {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            page-break-inside: avoid; /* Avoid page breaks inside tables */
+            border-collapse: separate !important;;
+            border-radius: 10px;
+            margin-left: 0.7%;            
+            border: solid #ccc 1px;
+            -moz-border-radius: 6px;
+            -webkit-border-radius: 6px;
+            border-radius: 6px;
+            -webkit-box-shadow: 0 1px 1px #ccc;
+            -moz-box-shadow: 0 1px 1px #ccc;
+            box-shadow: 0 1px 1px #ccc;
+            table-layout: auto;
         }
         th, td {
-            border: 1px solid #ddd;
-            text-align: left;
+            
             padding: 8px;
+            text-align: left;
+            white-space: pre-wrap; 
+            word-wrap: break-word; 
+            border-left: 1px solid #ccc;
+            border-top: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+            -moz-border-radius: 2px;
+            -webkit-border-radius: 2px;
+            border-radius: 2px;
+            -webkit-box-shadow: 0 1px 1px #ccc;
+            -moz-box-shadow: 0 1px 1px #ccc;
+            box-shadow: 0 1px 1px #ccc;
+        }         
+        th {
+            background-color: #f2f2f2;
+        } */
+        table {
+            width: 100%;
+            border-collapse: collapse; /* Ensures single border lines between cells */
+            margin-left: 0.7%;
+            border: 1px solid #070707; /* Defines a single border for the table */
+            table-layout: auto;
+        }
+
+        th, td {
+            border: 1px solid #070707; /* Applies single border to each cell */
+            padding: 8px;
+            text-align: left;
+            white-space: pre-wrap; /* Allows text to wrap */
+            word-wrap: break-word; /* Breaks long words if necessary */
         }
         th {
-            background-color: #f4b084;
-            color: white;
+            background-color: #f2f2f2; /* Adds a background color to header cells */
         }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
+        .merged-row {
+            text-align: center; /* Center-aligns text in merged rows */
+            background-color: #f2f2f2; /* Optional: add a background color */
         }
-        tr:nth-child(odd) {
-            background-color: #ffffff;
+        th {
+            background-color: #f2f2f2;
+        }    
+        #passstatus {
+            font-size: xx-large; 
+            font-weight: bolder;
+            color: green         
+        } 
+        #failstatus {
+            font-size: xx-large; 
+            font-weight: bolder;
+            color: red    
+        }        
+        @media print {
+            table {
+            max-width: 100%; /* Prevent table from exceeding PDF dimensions */
+            }
         }
-        .header {
-            position: absolute;
-            top: 10mm;
-            left: 20mm;
-            right: 20mm;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .header img {
-            max-height: 40px;
-        }
-        .footer {
-            position: absolute;
-            bottom: 10mm;
-            left: 20mm;
-            right: 20mm;
-            text-align: center;
-            font-size: 12px;
-        }
+       
     </style>
 </head>
 <body>
-    <div class="a4-page">
-        <div class="header">
-            <img src="logo.png" alt="Logo">
-            <h2>Document Title</h2>
-        </div>
-        <h1>Sample Document</h1>
-        <p>This is a sample paragraph demonstrating the appearance of content within 
-          an A4-sized page layout.</p>
-        <p>Additional text can be included to further illustrate the layout and styling.</p>
-        <table>
-            <thead>
-                <tr>
-                    <th>Sno</th>
-                    <th>Step</th>
-                    <th>Expected Result</th>
-                    <th>Actual Result</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td rowspan="2">Login to the system and navigate to the dashboard</td>
-                    <td>User is logged in successfully</td>
-                    <td>User is logged in successfully</td>
-                    <td>Pass</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Dashboard loads correctly</td>
-                    <td>Dashboard loads correctly</td>
-                    <td>Pass</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Submit a form</td>
-                    <td>Form is submitted successfully</td>
-                    <td>Error on submission</td>
-                    <td>Fail</td>
-                </tr>
-            </tbody>
-        </table>        
-        <div class="footer">
-            Page 1 of 1
-        </div>
+
+<!-- <header id="divHeader">
+    <img id="logo" src="logo.png" alt="Logo">
+    <h1 id = "tcid">TCID-11221121</h1>
+</header> -->
+
+<div class="testsummaryrow">
+    <div class="testdesc">
+        <div><b>Test Description:</b></div>       
+        <div>Sample text for the first column. Sample text for the first column. Sample text for the first column. Sample text for the first column. Sample text for the first column. Sample text for the first column. Sample text for the first column. Sample text for the first column. Sample text for the first column. </div>
     </div>
-    <div class="a4-page">
-        <div class="header">
-            <img src="logo.png" alt="Logo">
-            <h2>Document Title</h2>
+    <div class="testenv">
+        <div><b>Browser Details:</b></div>
+        <div>
+            <img id="browsimg" src=""/>
         </div>
-        <!-- More content dynamically added here -->
-        <p>Continuing content for the next page.</p>
-        <table>
-            <thead>
-                <tr>
-                    <th>Sno</th>
-                    <th>Step</th>
-                    <th>Expected Result</th>
-                    <th>Actual Result</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Login to the system</td>
-                    <td>User is logged in successfully</td>
-                    <td>User is logged in successfully</td>
-                    <td>Pass</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Navigate to dashboard</td>
-                    <td>Dashboard loads correctly</td>
-                    <td>Dashboard loads correctly</td>
-                    <td>Pass</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Submit a form</td>
-                    <td>Form is submitted successfully</td>
-                    <td>Error on submission</td>
-                    <td>Fail</td>
-                </tr>
-            </tbody>
-        </table>
+        <div><b>Version Details:</b></div>
+        <div>120.1122.1221</div>
     </div>
+    <div class="teststatus">
+        <div id="failstatus">PASSED</div>
+    </div>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Sno</th>
+            <th>Step</th>
+            <th>Expected Result</th>
+            <th>Actual Result</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan="2">1</td>
+            <td>Step 1</td>
+            <td>Expected Result 1Expected Result 1Expected Result 1Expected Result 1Expected Result 1Expected Result 1Expected Result 1Expected Result 1Expected Result 1Expected Result 1Expected Result 1Expected Result 1Expected Result 1</td>
+            <td>Actual Result 1</td>
+            <td>Pass</td>
+        </tr>
+        <tr>
+            <td>Open browser</td>
+            <td colspan="2" > Merged Row Between Step 2 and Step 3
+                <img id="imga" src="">
+            </td>
+            <td>Pass</td>
+        </tr>        
+        <tr>
+            <td rowspan="2">2</td>
+            <td>Step 2</td>
+            <td>Expected Result 2</td>
+            <td>Actual Result 2Actual Result 2Actual Result 2Actual Result 2Actual Result 2Actual Result 2Actual Result 2Actual Result 2Actual Result 2Actual Result 2Actual Result 2Actual Result 2Actual Result 2Actual Result 2Actual Result 2Actual Result 2</td>
+            <td>Fail</td>
+        </tr>
+        <tr>
+            <td>Open</td>
+            <td colspan="2" > Merged Row Between Step 2 and Step 3
+                <img id="imga" src="">
+            </td>
+            <td>Pass</td>
+        </tr>  
+        <tr>
+            <td rowspan="2">3</td>
+            <td>Step 3</td>
+            <td>Expected Result 3</td>
+            <td>Actual Result 3</td>
+            <td>Pass</td>
+        </tr>
+        <tr>
+            <td>close browser</td>
+            <td colspan="2">Expected Result 3</td>            
+            <td>Pass</td>
+        </tr>
+    </tbody>
+</table>
+
 </body>
 </html>

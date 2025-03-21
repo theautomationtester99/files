@@ -50,7 +50,7 @@
             border-radius: 6px;   
         }
         .testenv {
-            flex: 0.8;
+            flex: 1;
             padding: 10px 0 10px 0;
             background-color: beige;
             margin: 5px;
@@ -59,18 +59,17 @@
         }
         .teststatus {
             flex: 1;
-            padding: 40px 0 0 0;
+            padding: 40px 5px 0 5px;
             background-color: beige;
             margin: 5px;
             border-radius: 6px;
             text-align: center;     
         }
-        table {
+        /* table {
             width: 100%;
             border-collapse: separate !important;;
             border-radius: 10px;
-            margin-left: 0.7%;
-            /* margin-top: 20px; */
+            margin-left: 0.7%;            
             border: solid #ccc 1px;
             -moz-border-radius: 6px;
             -webkit-border-radius: 6px;
@@ -81,11 +80,11 @@
             table-layout: auto;
         }
         th, td {
-            /* border: 1px solid #ccc; */
+            
             padding: 8px;
             text-align: left;
-            white-space: pre-wrap; /* Allows text to wrap */
-            word-wrap: break-word; /* Breaks long words if necessary */
+            white-space: pre-wrap; 
+            word-wrap: break-word; 
             border-left: 1px solid #ccc;
             border-top: 1px solid #ccc;
             border-right: 1px solid #ccc;
@@ -100,6 +99,24 @@
         }         
         th {
             background-color: #f2f2f2;
+        } */
+        table {
+            width: 100%;
+            border-collapse: collapse; /* Ensures single border lines between cells */
+            margin-left: 0.7%;
+            border: 1px solid #070707; /* Defines a single border for the table */
+            table-layout: auto;
+        }
+
+        th, td {
+            border: 1px solid #070707; /* Applies single border to each cell */
+            padding: 8px;
+            text-align: left;
+            white-space: pre-wrap; /* Allows text to wrap */
+            word-wrap: break-word; /* Breaks long words if necessary */
+        }
+        th {
+            background-color: #f2f2f2; /* Adds a background color to header cells */
         }
         .merged-row {
             text-align: center; /* Center-aligns text in merged rows */
