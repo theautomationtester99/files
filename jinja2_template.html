@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        header {
+            display: flex;
+            height: auto;
+            justify-content: space-between;
+            align-items:center;            
+            /* background-color: #f8f8f8; */
+            border-bottom: 2px solid #413a97;
+        }
+        #logo {           
+            /* margin-right: auto;             */
+            max-width:150px;
+        }
+        #browsimg {           
+            /* margin-right: auto;             */
+            max-width:50px;
+        }
+        #imga { 
+            margin-top: 10px;         
+            margin-right: 20px;            
+            max-width:500px;
+        }
+        #tcid {
+            /* margin: auto; */
+            margin-left: auto;
+            margin-right: 0;
+        }
+        .testsummaryrow {
+            display: flex;
+            /* border: 1px solid #413a97; */
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding: 5px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        .testdesc {
+            flex: 4;
+            padding: 5px;            
+            background-color: beige;
+            margin: 5px;
+            border-radius: 6px;   
+        }
+        .testenv {
+            flex: 1;
+            padding: 10px 0 10px 0;
+            background-color: beige;
+            margin: 5px;
+            border-radius: 6px;
+            text-align: center;            
+        }
+        .teststatus {
+            flex: 1;
+            padding: 40px 5px 0 5px;
+            background-color: beige;
+            margin: 5px;
+            border-radius: 6px;
+            text-align: center;     
+        }
+        /* table {
+            width: 100%;
+            border-collapse: separate !important;;
+            border-radius: 10px;
+            margin-left: 0.7%;            
+            border: solid #ccc 1px;
+            -moz-border-radius: 6px;
+            -webkit-border-radius: 6px;
+            border-radius: 6px;
+            -webkit-box-shadow: 0 1px 1px #ccc;
+            -moz-box-shadow: 0 1px 1px #ccc;
+            box-shadow: 0 1px 1px #ccc;
+            table-layout: auto;
+        }
+        th, td {
+            
+            padding: 8px;
+            text-align: left;
+            white-space: pre-wrap; 
+            word-wrap: break-word; 
+            border-left: 1px solid #ccc;
+            border-top: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+            -moz-border-radius: 2px;
+            -webkit-border-radius: 2px;
+            border-radius: 2px;
+            -webkit-box-shadow: 0 1px 1px #ccc;
+            -moz-box-shadow: 0 1px 1px #ccc;
+            box-shadow: 0 1px 1px #ccc;
+        }         
+        th {
+            background-color: #f2f2f2;
+        } */
+        table {
+            width: 100%;
+            border-collapse: collapse; /* Ensures single border lines between cells */
+            margin-left: 0.7%;
+            border: 1px solid #070707; /* Defines a single border for the table */
+            table-layout: auto;
+        }
+
+        th, td {
+            border: 1px solid #070707; /* Applies single border to each cell */
+            padding: 5px;
+            text-align: left;
+            white-space: pre-wrap; /* Allows text to wrap */
+            word-wrap: break-word; /* Breaks long words if necessary */
+        }
+        th {
+            background-color: #f2f2f2; /* Adds a background color to header cells */
+        }
+        .merged-row {
+            text-align: center; /* Center-aligns text in merged rows */
+            /* background-color: #f2f2f2;  */
+        }            
+        #passstatus {
+            font-size: xx-large; 
+            font-weight: bolder;
+            color: green         
+        } 
+        #failstatus {
+            font-size: xx-large; 
+            font-weight: bolder;
+            color: red    
+        }        
+        @media print {
+            table {
+            max-width: 100%; /* Prevent table from exceeding PDF dimensions */
+            }
+        }
+        /* Other styles unchanged for brevity */
+    </style>
+</head>
+<body>
+
+<div class="testsummaryrow">
+    <div class="testdesc">
+        <div><b>Test Description:</b></div>       
+        <div>{{ test_description }}</div>
+    </div>
+    <div class="testenv">
+        <div><b>Browser Details:</b></div>
+        <div>
+            <img id="browsimg" src="{{ browser_img_src }}" alt="{{ browser_img_alt }}">
+        </div>
+        <div><b>Version Details:</b></div>
+        <div>{{ browser_version }}</div>
+    </div>
+    <div class="teststatus">
+        <div id="{{ overall_status }}">{{ overall_status_text }}</div>
+    </div>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Sno</th>
+            <th>Step</th>
+            <th>Expected Result</th>
+            <th>Actual Result</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, value in table_data.items() %}
+        <tr>
+            <td rowspan="{{ value.rowspan }}">{{ value.sno }}</td>
+            <td>{{ value.step }}</td>
+            <td>{{ value.expected_result }}</td>
+            <td>{{ value.actual_result }}</td>
+            <td>{{ value.status }}</td>
+        </tr>
+        {% if value.sub_steps %}
+        {% for key1, value1 in value.sub_steps.items() %}
+        <tr>
+            <td>{{ value1.sub_step }}</td>
+            <td colspan="2">
+                {% if value1.sub_step_message %}
+                {{ value1.sub_step_message }}
+                {% endif %}
+                {% if value1.image_src %}
+                <img id="imga" src="{{ value1.image_src }}" alt="{{ value1.image_alt }}">
+                {% endif %}
+            </td>
+            <td>{{ value1.sub_step_status }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>
