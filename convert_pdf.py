@@ -39,7 +39,7 @@ async def main():
     multiline_string = "I will  there."
     
     #head_template = '<style>@divHeader{width: 2500px;height:auto;align-items:center;border-bottom:2px solid #413a97;} #logo{max-width:100px;} #tcid{margin-left:auto;margin-right:0;}</style><div id="divHeader"><img id="logo"src="data:image/png;base64,'+base64_string+'"alt="Logo"><hr></hr></div>'
-    head_template = '<div style="display: flex; width: 100%; height: auto; justify-content: space-between; align-items: center; border-bottom: 2px solid #413a97;"><div style="flex: 0;"><img id="logo" src="data:image/png;base64,'+base64_string+'" alt="Logo" style="max-width: 150px;"></div><div id="tcid" style="flex: 0;font-size:10px;white-space: nowrap;margin-right: 20px;"><h1>TCID-11221121</h1></div></div>'
+    head_template = '<div style="display: flex; width: 100%; height: auto; justify-content: space-between; align-items: center; border-bottom: 2px solid #413a97;"><div style="flex: 0;margin-left: 5px;"><img id="logo" src="data:image/png;base64,'+base64_string+'" alt="Logo" style="max-height: 100px;object-fit: contain;max-width:100px"></div><div id="tcid" style="flex: 0;font-size:10px;white-space: nowrap;margin-right: 20px;"><h1>TCID-11221121</h1></div></div>'
     browser = await launch({"headless": True})
     print(await browser.version())
     page = await browser.newPage()
