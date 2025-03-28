@@ -10,7 +10,6 @@ rev = pyppeteer.__chromium_revision__
 print(rev)
 
 base64_string = ""
-
 with open("logo.png", "rb") as image_file:
     base64_string = base64.b64encode(image_file.read()).decode('utf-8')
 

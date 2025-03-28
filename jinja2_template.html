@@ -42,65 +42,46 @@
             margin-bottom: 10px;
             padding: 5px;
         }
-        .testdesc {
+        .testdescp, .testenvp, .teststatusp {
+            background-color: #a1d99b;
+        }
+        .testdescf, .testenvf, .teststatusf {
+            background-color: #fc9272;
+        }
+        .testdescp, .testdescf {
             flex: 4;
             padding: 5px;            
-            background-color: #fc9272;
             margin: 5px;
             border-radius: 6px;   
         }
-        .testenv {
+        .testenvp, .testenvf {
             flex: 1;
             padding: 10px 0 10px 0;
-            background-color: #fc9272;
             margin: 5px;
             border-radius: 6px;
             text-align: center;
-            word-wrap: break-word            
+            word-wrap: break-all            
         }
-        .teststatus {
+        .teststatusp {
             flex: 1;
             padding: 40px 5px 0 5px;
-            background-color: #fc9272;
             margin: 5px;
             border-radius: 6px;
             text-align: center;     
+            font-size: xx-large; 
+            font-weight: bolder;
+            color: #31a354
         }
-        /* table {
-            width: 100%;
-            border-collapse: separate !important;;
-            border-radius: 10px;
-            margin-left: 0.7%;            
-            border: solid #ccc 1px;
-            -moz-border-radius: 6px;
-            -webkit-border-radius: 6px;
+        .teststatusf {
+            flex: 1;
+            padding: 40px 5px 0 5px;
+            margin: 5px;
             border-radius: 6px;
-            -webkit-box-shadow: 0 1px 1px #ccc;
-            -moz-box-shadow: 0 1px 1px #ccc;
-            box-shadow: 0 1px 1px #ccc;
-            table-layout: auto;
+            text-align: center;     
+            font-size: xx-large; 
+            font-weight: bolder;
+            color: #de2d26
         }
-        th, td {
-            
-            padding: 8px;
-            text-align: left;
-            white-space: pre-wrap; 
-            word-wrap: break-word; 
-            border-left: 1px solid #ccc;
-            border-top: 1px solid #ccc;
-            border-right: 1px solid #ccc;
-            padding: 10px;
-            text-align: left;
-            -moz-border-radius: 2px;
-            -webkit-border-radius: 2px;
-            border-radius: 2px;
-            -webkit-box-shadow: 0 1px 1px #ccc;
-            -moz-box-shadow: 0 1px 1px #ccc;
-            box-shadow: 0 1px 1px #ccc;
-        }         
-        th {
-            background-color: #f2f2f2;
-        } */
         table {
             width: 100%;
             border-collapse: collapse; /* Ensures single border lines between cells */
@@ -113,7 +94,7 @@
             border: 1px solid #070707; /* Applies single border to each cell */
             padding: 5px;
             text-align: left;
-            white-space: pre-wrap; /* Allows text to wrap */
+            white-space: normal; /* Allows text to wrap */
             word-wrap: break-word; /* Breaks long words if necessary */
         }
         th {
@@ -122,17 +103,7 @@
         .merged-row {
             text-align: center; /* Center-aligns text in merged rows */
             /* background-color: #f2f2f2;  */
-        }            
-        #passstatus {
-            font-size: xx-large; 
-            font-weight: bolder;
-            color: green         
-        } 
-        #failstatus {
-            font-size: xx-large; 
-            font-weight: bolder;
-            color: #de2d26  
-        }        
+        }       
         @media print {
             table {
             max-width: 100%; /* Prevent table from exceeding PDF dimensions */
@@ -144,11 +115,12 @@
 <body>
 
 <div class="testsummaryrow">
-    <div class="testdesc">
+    {% if "passed" in overall_status_text|lower %}
+    <div class="testdescp">
         <div><b>Test Description:</b></div>       
         <div>{{ test_description }}</div>
     </div>
-    <div class="testenv">
+    <div class="testenvp">
         <div><b>Browser Details:</b></div>
         <div>
             <img id="browsimg" src="{{ browser_img_src }}" alt="{{ browser_img_alt }}">
@@ -156,9 +128,27 @@
         <div><b>Version Details:</b></div>
         <div>{{ browser_version }}</div>
     </div>
-    <div class="teststatus">
-        <div id="{{ overall_status }}">{{ overall_status_text }}</div>
+    <div class="teststatusp">
+        <div>{{ overall_status_text }}</div>
     </div>
+    {% else %}
+    <div class="testdescf">
+        <div><b>Test Description:</b></div>       
+        <div>{{ test_description }}</div>
+    </div>
+    <div class="testenvf">
+        <div><b>Browser Details:</b></div>
+        <div>
+            <img id="browsimg" src="{{ browser_img_src }}" alt="{{ browser_img_alt }}">
+        </div>
+        <div><b>Version Details:</b></div>
+        <div>{{ browser_version }}</div>
+    </div>
+    <div class="teststatusf">
+        <div>{{ overall_status_text }}</div>
+    </div>
+    {% endif %}
+
 </div>
 
 <table>
@@ -186,7 +176,8 @@
             <td>{{ value1.sub_step }}</td>
             <td colspan="2">
                 {% if value1.sub_step_message %}
-                {{ value1.sub_step_message }}
+                <span>{{ value1.sub_step_message }}</span>
+                <br>
                 {% endif %}
                 {% if value1.image_src %}
                 <img id="imga" src="{{ value1.image_src }}" alt="{{ value1.image_alt }}">
