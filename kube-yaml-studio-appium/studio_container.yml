@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: android-studio-deployment
+  namespace: android-appium-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: android-studio
+  template:
+    metadata:
+      labels:
+        app: android-studio
+    spec:
+      containers:
+      - name: android-studio-container
+        image: android-studio-image:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 5555
+        - containerPort: 5901

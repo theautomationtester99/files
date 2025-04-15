@@ -1,0 +1,54 @@
+# Base image with Python 3.12
+FROM python:3.12
+
+# Update and install necessary packages, including LXDE and lxtask
+RUN apt-get update && apt-get install -y \
+    software-properties-common \
+    wget \
+    gnupg \
+    curl \
+    xvfb \
+    x11-apps \
+    tightvncserver \
+    lxde \
+    lxtask \
+    net-tools \
+    dbus-x11 \
+    xfonts-base \
+    xfonts-100dpi \
+    xfonts-75dpi
+
+# Install Google Chrome
+RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list' && \
+    apt-get update && apt-get install -y google-chrome-stable
+
+# Install Microsoft Edge
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg && \
+    install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/ && \
+    sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main" > /etc/apt/sources.list.d/microsoft-edge.list' && \
+    rm microsoft.gpg && \
+    apt-get update && apt-get install -y microsoft-edge-stable
+
+# Configure TightVNC server and update ~/.vnc/xstartup
+RUN mkdir -p ~/.vnc && \
+    echo "#!/bin/sh\nunset SESSION_MANAGER\nexport \$(dbus-launch)\nexec startlxde &" > ~/.vnc/xstartup && \
+    chmod +x ~/.vnc/xstartup && \
+    echo "password" | vncpasswd -f > ~/.vnc/passwd && \
+    chmod 600 ~/.vnc/passwd
+
+# Set up X11 forwarding for GUI applications
+ENV DISPLAY=:99
+ENV USER=root
+
+# Install Python packages or tools you need
+RUN pip install --upgrade pip
+
+# Expose VNC ports
+EXPOSE 5901
+
+# Create workspace directory
+WORKDIR /workspace
+
+# Start TightVNC server on container startup
+CMD ["bash", "-c", "tightvncserver :1 -geometry 1024x768 -depth 24 && bash"]

@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: appium-deployment
+  namespace: android-appium-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: appium
+  template:
+    metadata:
+      labels:
+        app: appium
+    spec:
+      containers:
+      - name: appium-container
+        image: appium-image:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 4723
+	- containerPort: 5901
+	resources:
+          limits:
+            memory: "512Mi"
+          requests:
+            memory: "256Mi"

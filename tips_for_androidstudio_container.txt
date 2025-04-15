@@ -1,0 +1,6 @@
+create docker image with android studio and tight vnc.
+ensure in wsl the kvm-ok command runs perfectly
+
+start the docker container using below command --device, --privileged are key
+
+docker run --privileged --device=/dev/kvm --rm -it -d -p 5901:5901 -v D:\allprojects\web_automation_htmltopdf:/workspace appium_android_studio

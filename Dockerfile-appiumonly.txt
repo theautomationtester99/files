@@ -1,0 +1,79 @@
+# Base image
+FROM debian:bookworm-slim
+
+# Update and install necessary packages, including LXDE, lxtask, patchelf, and Xvfb
+RUN apt-get update && apt-get install -y \
+    software-properties-common \
+    wget \
+    gnupg \
+    curl \
+    xvfb \
+    x11-apps \
+    tightvncserver \
+    lxde \
+    lxtask \
+    net-tools \
+    dbus-x11 \
+    xfonts-base \
+    xfonts-100dpi \
+    xfonts-75dpi \
+    python3-tk \
+    python3-dev \
+    patchelf \
+    unzip \
+    openjdk-17-jdk \
+    nano \
+    qemu-kvm \
+    libvirt-daemon-system \
+    libvirt-clients \
+    bridge-utils \
+    cpu-checker && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install Appium
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g appium
+
+# Install Android SDK tools and adjust directory structure
+RUN mkdir -p /android-sdk/cmdline-tools/latest/bin && \
+    wget -q https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip -O /android-sdk/tools.zip && \
+    unzip /android-sdk/tools.zip -d /android-sdk/temp && \
+    mv /android-sdk/temp/cmdline-tools/* /android-sdk/cmdline-tools/latest && \
+    rm -r /android-sdk/temp /android-sdk/tools.zip && \
+    yes | /android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses && \
+    /android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=/android-sdk "platform-tools" "build-tools;34.0.0" "platforms;android-34"
+
+# Add ADB to PATH
+ENV ANDROID_SDK_ROOT=/android-sdk
+ENV PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH
+
+# Configure TightVNC server and update ~/.vnc/xstartup
+RUN mkdir -p ~/.vnc && \
+    echo "#!/bin/sh\nunset SESSION_MANAGER\nexport \$(dbus-launch)\nexec startlxde &" > ~/.vnc/xstartup && \
+    chmod +x ~/.vnc/xstartup && \
+    echo "password" | vncpasswd -f > ~/.vnc/passwd && \
+    chmod 600 ~/.vnc/passwd
+
+# Install iputils-ping for the ping command
+RUN apt-get update && apt-get install -y \
+    iputils-ping \
+    net-tools \
+    iproute2 \
+    lsof \
+    netcat \
+    nmap
+
+# Set up X11 forwarding for GUI applications
+ENV DISPLAY=:99
+ENV USER=root
+
+# Create workspace directory
+WORKDIR /workspace
+
+# Expose VNC and Appium server ports
+EXPOSE 5902
+EXPOSE 4723
+
+# Start Xvfb, TightVNC server, and Appium on container startup
+CMD ["bash", "-c", "rm -f /tmp/.X99-lock /tmp/.X1-lock && rm -rf /tmp/.X11-unix && Xvfb :99 -screen 0 1024x768x24 & tightvncserver :2 -geometry 1024x768 -depth 24 & appium & tail -f /dev/null"]

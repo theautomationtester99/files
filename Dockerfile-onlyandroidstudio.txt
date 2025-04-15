@@ -1,0 +1,79 @@
+# Base image
+FROM debian:bookworm-slim
+
+# Update and install necessary packages, including LXDE, lxtask, patchelf, and Xvfb
+RUN apt-get update && apt-get install -y \
+    software-properties-common \
+    wget \
+    gnupg \
+    curl \
+    xvfb \
+    x11-apps \
+    tightvncserver \
+    lxde \
+    lxtask \
+    net-tools \
+    dbus-x11 \
+    xfonts-base \
+    xfonts-100dpi \
+    xfonts-75dpi \
+    python3-tk \
+    python3-dev \
+    patchelf \
+    unzip \
+    openjdk-17-jdk \
+    nano \
+    qemu-kvm \
+    libvirt-daemon-system \
+    libvirt-clients \
+    bridge-utils \
+    cpu-checker
+
+# Install Android Studio
+RUN wget https://redirector.gvt1.com/edgedl/android/studio/ide-zips/2024.3.1.14/android-studio-2024.3.1.14-linux.tar.gz -O android-studio.tar.gz && \
+    tar -xzf android-studio.tar.gz -C /opt && \
+    chmod -R +x /opt/android-studio && \
+    ln -s /opt/android-studio/bin/studio.sh /usr/local/bin/android-studio && \
+    rm android-studio.tar.gz
+
+# Add Android Studio and Appium to PATH
+ENV PATH="/opt/android-studio/bin:/usr/local/bin:$PATH"
+
+# Configure TightVNC server and update ~/.vnc/xstartup
+RUN mkdir -p ~/.vnc && \
+    echo "#!/bin/sh\nunset SESSION_MANAGER\nexport \$(dbus-launch)\nexec startlxde &" > ~/.vnc/xstartup && \
+    chmod +x ~/.vnc/xstartup && \
+    echo "password" | vncpasswd -f > ~/.vnc/passwd && \
+    chmod 600 ~/.vnc/passwd
+
+# Add a shortcut to Android Studio on the desktop
+RUN mkdir -p /root/Desktop && \
+    echo "[Desktop Entry]\nVersion=1.0\nType=Application\nName=Android Studio\nExec=/opt/android-studio/bin/studio.sh\nIcon=/opt/android-studio/bin/studio.png\nComment=Android Studio IDE\nTerminal=false\nCategories=Development;IDE;" > /root/Desktop/android-studio.desktop && \
+    chmod +x /root/Desktop/android-studio.desktop
+
+
+# Install iputils-ping for the ping command
+RUN apt-get update && apt-get install -y \
+    iputils-ping \
+    net-tools \
+    iproute2 \
+    lsof \
+    netcat \
+    nmap
+
+# Set up X11 forwarding for GUI applications
+ENV DISPLAY=:99
+ENV USER=root
+
+# Set up and start Xvfb for the virtual display
+RUN Xvfb :99 -screen 0 1024x768x24 &
+
+# Expose necessary ports for emulator
+EXPOSE 5555
+EXPOSE 5901
+
+# Create workspace directory
+WORKDIR /workspace
+
+# Start Xvfb and TightVNC server on container startup
+CMD ["bash", "-c", "rm -f /tmp/.X99-lock /tmp/.X1-lock && rm -rf /tmp/.X11-unix && Xvfb :99 -screen 0 1024x768x24 & tightvncserver :1 -geometry 1024x768 -depth 24 & tail -f /dev/null"]
