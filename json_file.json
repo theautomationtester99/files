@@ -4,14 +4,14 @@
     "browser_img_src": "",
     "browser_img_alt": "",
     "browser_version": "",
+    "executed_date": "20MAR2025",
     "overall_status_text": "",
     "table_data": {
         "1": {
             "sno": 1,
             "rowspan": 3,
             "step": "",
-            "expected_result": "",
-            "actual_result": "",
+            "result": "",
             "overall_step_status": "",
             "sub_steps": {
                 "1": {
@@ -34,8 +34,7 @@
             "sno": 2,
             "rowspan": 4,
             "step": "CLick on someting. CLick on someting. CLick on someting. CLick on someting.",
-            "expected_result": "Expected result 1 Expected result 1 Expected result 1 Expected result 1 Expected result 1 Expected result 1 Expected result 1 Expected result 1 Expected result 1",
-            "actual_result": "Actual result 1 Actual result 1 Actual result 1 Actual result 1 Actual result 1 Actual result 1 Actual result 1 Actual result 1 Actual result 1 Actual result 1 Actual result 1 Actual result 1 Actual result 1",
+            "result": "Expected result 1 Expected result 1 Expected result 1 Expected result 1 Expected result 1 Expected result 1 Expected result 1 Expected result 1 Expected result 1",
             "overall_step_status": "Passed",
             "sub_steps": {
                 "1": {
