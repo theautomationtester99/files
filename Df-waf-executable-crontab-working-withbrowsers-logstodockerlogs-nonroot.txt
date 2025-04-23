@@ -1,0 +1,125 @@
+# Use Python 3.12 as the base image
+FROM python:3.12
+
+# Install essential dependencies
+RUN apt-get update && apt-get install -y \
+    xvfb \
+    x11-apps \
+    tightvncserver \
+    lxde \
+    dbus-x11 \
+    xfonts-base \
+    net-tools \
+    cron \
+    git \
+    dos2unix \
+    patchelf \
+    libnss3 \
+    libasound2 \
+    libgtk-3-0 \
+    sudo
+
+# Set environment variables
+ENV DELETE_TEST_RESULTS_IMAGES_RECORDINGS_FOLDERS_BEFORE_START=yes
+ENV SCREENSHOT_STRATEGY=always
+ENV HIGHLIGHT_ELEMENTS=no
+ENV MAX_RETRIES=0
+ENV UPLOAD_TEST_RESULTS=no
+ENV SEND_TEST_RESULTS_EMAIL=yes
+ENV SENDER_EMAIL=theautomationtester99@gmail.com
+ENV SENDER_EMAIL_PASSWORD=gAAAAABoAjriMu91TSpf6VycE89O8wv2gpUMx4MkmxAtvFn-Auz4g5RhnPUZJ13FRHkvoM_JnpWau3GoHgcumOmp14Aecg7AKKVORICG87IPFKFX4I6r2xY=
+ENV RECIPIENT_EMAILS=theautomationtester@hotmail.com,theautomationtester99@gmail.com
+ENV RUN_IN_SELENIUM_GRID=no
+ENV GRID_URL=http://localhost
+ENV RUN_IN_APPIUM_GRID=no
+ENV APPIUM_URL=http://localhost
+ENV LOG_LEVEL=DEBUG
+ENV INPRIVATE=yes
+ENV HEADLESS=yes
+ENV NO_THREADS=4
+ENV USER=appuser
+ENV DISPLAY=:0
+ENV XAUTHORITY=/home/appuser/.Xauthority
+ENV PATH="$PATH:/home/appuser/.local/bin"
+
+# Create a non-root user
+RUN groupadd -r appuser && useradd -r -g appuser -m -s /bin/bash appuser && passwd -d appuser
+
+RUN usermod -aG sudo appuser
+RUN echo "appuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# Ensure correct permissions for X11
+RUN mkdir -p /tmp/.X11-unix && chmod 1777 /tmp/.X11-unix
+
+# Copy .Xauthority file for non-root user
+RUN touch /home/appuser/.Xauthority && \
+    chown appuser:appuser /home/appuser/.Xauthority
+
+# Set the working directory
+WORKDIR /home/appuser/workspace
+
+# Give the non-root user ownership
+RUN chown -R appuser:appuser /home/appuser/workspace
+
+# Install Google Chrome
+RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list' && \
+    apt-get update && apt-get install -y google-chrome-stable
+
+# Install Microsoft Edge
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg && \
+    install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/ && \
+    sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main" > /etc/apt/sources.list.d/microsoft-edge.list' && \
+    rm microsoft.gpg && \
+    apt-get update && apt-get install -y microsoft-edge-stable
+
+# Switch to non-root user for subsequent commands
+USER appuser
+
+# Install Chromium for Pyppeteer
+RUN mkdir -p /home/appuser/.local/share/pyppeteer/local-chromium/1181205 && \
+    wget -O /tmp/chromium.zip https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/1181205/chrome-linux.zip && \
+    unzip /tmp/chromium.zip -d /home/appuser/.local/share/pyppeteer/local-chromium/1181205 && \
+    rm /tmp/chromium.zip
+
+# Clone project repository and install dependencies
+ARG CACHEBUST=0
+RUN echo $CACHEBUST && git clone https://github.com/theautomationtester99/web_automation_htmltopdf.git /home/appuser/workspace
+RUN pip install --no-cache-dir -r /home/appuser/workspace/requirements.txt
+
+# Build the project
+RUN python setup.py build
+
+RUN cp -r /home/appuser/workspace/build /home/appuser/
+RUN chmod -R +x /home/appuser/build
+
+RUN rm -rf /home/appuser/workspace/*
+
+# Configure TightVNC server
+RUN mkdir -p ~/.vnc && \
+    echo "#!/bin/sh\nunset SESSION_MANAGER\nexport \$(dbus-launch)\nexec startlxde &" > ~/.vnc/xstartup && \
+    chmod +x ~/.vnc/xstartup && \
+    echo "password" | vncpasswd -f > ~/.vnc/passwd && \
+    chmod 600 ~/.vnc/passwd
+
+# Expose VNC port
+EXPOSE 5901
+
+# Set up and start Xvfb for the virtual display
+RUN Xvfb :0 -screen 0 1024x768x24 &
+
+RUN echo '*/15 * * * * DISPLAY=:0 XAUTHORITY=/home/appuser/.Xauthority . /home/appuser/env_vars.sh; /home/appuser/build/runner --start >> /proc/1/fd/1 2>> /proc/1/fd/2' | crontab -
+
+USER root
+# Add user to /etc/cron.allow
+RUN echo "appuser" >> /etc/cron.allow
+RUN service cron restart
+
+USER appuser
+COPY entrypoint.sh /home/appuser/entrypoint.sh
+USER root
+RUN chmod +x /home/appuser/entrypoint.sh && dos2unix /home/appuser/entrypoint.sh
+
+USER appuser
+# Start TightVNC and cron safely (Removed 'sudo')
+CMD ["bash", "-c", "Xvfb :0 -screen 0 1024x768x24 & tightvncserver :1 -geometry 1024x768 -depth 24 && sudo service cron restart && /home/appuser/entrypoint.sh && tail -f /dev/null"]

@@ -1,0 +1,98 @@
+# in the selenium code ensure driver maximize is commented otherwise crontab can't launch browser ui
+
+# Use Python 3.12 as the base image
+FROM python:3.12
+
+# Install essential dependencies
+RUN apt-get update && apt-get install -y \
+    xvfb \
+    x11-apps \
+    tightvncserver \
+    lxde \
+    dbus-x11 \
+    xfonts-base \
+    net-tools \
+    cron \
+    git \
+    dos2unix
+
+# Set environment variables
+ENV DELETE_TEST_RESULTS_IMAGES_RECORDINGS_FOLDERS_BEFORE_START=yes
+ENV SCREENSHOT_STRATEGY=always
+ENV HIGHLIGHT_ELEMENTS=no
+ENV MAX_RETRIES=0
+ENV UPLOAD_TEST_RESULTS=no
+ENV SEND_TEST_RESULTS_EMAIL=yes
+ENV SENDER_EMAIL=theautomationtester99@gmail.com
+ENV SENDER_EMAIL_PASSWORD=gAAAAABoAjriMu91TSpf6VycE89O8wv2gpUMx4MkmxAtvFn-Auz4g5RhnPUZJ13FRHkvoM_JnpWau3GoHgcumOmp14Aecg7AKKVORICG87IPFKFX4I6r2xY=
+ENV RECIPIENT_EMAILS=theautomationtester@hotmail.com,theautomationtester99@gmail.com
+ENV RUN_IN_SELENIUM_GRID=no
+ENV GRID_URL=http://localhost
+ENV RUN_IN_APPIUM_GRID=no
+ENV APPIUM_URL=http://localhost
+ENV LOG_LEVEL=DEBUG
+ENV INPRIVATE=yes
+ENV HEADLESS=yes
+ENV NO_THREADS=4
+
+# Set the working directory
+WORKDIR /workspace
+
+# Install Google Chrome
+RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list' && \
+    apt-get update && apt-get install -y google-chrome-stable
+
+# Install Microsoft Edge
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg && \
+    install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/ && \
+    sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main" > /etc/apt/sources.list.d/microsoft-edge.list' && \
+    rm microsoft.gpg && \
+    apt-get update && apt-get install -y microsoft-edge-stable
+
+# Clone project repository and install dependencies
+ARG CACHEBUST=0
+RUN echo $CACHEBUST && git clone https://github.com/theautomationtester99/web_automation_htmltopdf.git /workspace
+WORKDIR /workspace
+RUN git checkout 97b3e37571274d92d74a5b36ab2faa76612c04b5
+RUN pip install --no-cache-dir -r /workspace/requirements.txt
+
+# Build the project
+RUN python setup.py build
+
+# Move build folder to /root and set permissions
+RUN cp -r /workspace/build /root/
+RUN chmod -R +x /root/build
+
+# Clean up workspace
+RUN rm -rf /workspace/*
+
+# Configure TightVNC server
+RUN mkdir -p ~/.vnc && \
+    echo "#!/bin/sh\nunset SESSION_MANAGER\nexport \$(dbus-launch)\nexec startlxde &" > ~/.vnc/xstartup && \
+    chmod +x ~/.vnc/xstartup && \
+    echo "password" | vncpasswd -f > ~/.vnc/passwd && \
+    chmod 600 ~/.vnc/passwd
+
+# Expose VNC port
+EXPOSE 5901
+
+ENV USER=root
+ENV DISPLAY=:0
+
+# Set up and start Xvfb for the virtual display
+RUN Xvfb :0 -screen 0 1024x768x24 &
+
+COPY entrypoint_root.sh /root/entrypoint.sh
+#COPY wrapper_run.sh /root/wrapper_run.sh
+RUN dos2unix /root/entrypoint.sh
+#RUN dos2unix /root/wrapper_run.sh
+RUN chmod +x /root/entrypoint.sh
+#RUN chmod +x /root/wrapper_run.sh
+
+RUN echo '*/5 * * * * DISPLAY=:0 . /root/env_vars.sh; /root/build/runner --start-parallel >> /proc/1/fd/1 2>> /proc/1/fd/2' | crontab -
+
+RUN service cron restart
+
+# Start TightVNC
+CMD ["bash", "-c", "Xvfb :0 -screen 0 1024x768x24 & tightvncserver :1 -geometry 1024x768 -depth 24 && service cron restart && /root/entrypoint.sh && tail -f /dev/null"]
