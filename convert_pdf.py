@@ -5,6 +5,7 @@ import pyppeteer
 import base64
 
 from generate_html import generate_html
+from generate_html import generate_html1
 
 rev = pyppeteer.__chromium_revision__
 print(rev)
@@ -17,7 +18,9 @@ async def main():
     html_content = generate_html()
     
     #head_template = '<style>@divHeader{width: 2500px;height:auto;align-items:center;border-bottom:2px solid #413a97;} #logo{max-width:100px;} #tcid{margin-left:auto;margin-right:0;}</style><div id="divHeader"><img id="logo"src="data:image/png;base64,'+base64_string+'"alt="Logo"><hr></hr></div>'
-    head_template = '<div style="display: flex; width: 100%; height: auto; justify-content: space-between; align-items: center; border-bottom: 2px solid #413a97;"><div style="flex: 0;margin-left: 5px;"><img id="logo" src="data:image/png;base64,'+base64_string+'" alt="Logo" style="max-height: 99px;object-fit: contain;"></div><div id="tcid" style="flex: 0;font-size:10px;white-space: nowrap;margin-right: 20px;"><h1>TCID-11221121</h1></div></div>'
+    # head_template = '<div style="display: flex; width: 100%; margin:0; padding:0; height: auto; justify-content: space-between; align-items: center; border-bottom: 2px solid #413a97;"><div style="flex: 0;margin-left: 5px;"><img id="logo" src="data:image/png;base64,'+base64_string+'" alt="Logo" style="max-height: 99px;object-fit: contain;"></div><div id="tcid" style="flex: 0;font-size:10px;white-space: nowrap;margin-right: 20px;"><h1>TCID-11221121</h1></div></div>'
+    head_template = '<div style="display: flex; width: 100%; height: auto; justify-content: space-between; align-items: center; border-bottom: 2px solid #413a97; margin: 0; padding: 0;"><div style="flex: 0;margin-left: 5px;margin-top: 0;"><img id="logo" src="data:image/png;base64,'+base64_string+'" alt="Logo" style="max-height: 60px;object-fit: contain;"></div><div id="tcid" style="flex: 0;font-size:10px;white-space: nowrap;margin-right: 20px;"><h1 style="margin: 0; padding: 0;">TCID-11221121</h1></div></div>'
+
     browser = await launch({"headless": True})
     print(await browser.version())
     page = await browser.newPage()
@@ -35,10 +38,10 @@ async def main():
         "path": "output.pdf",
         "format": "Letter",
         "printBackground": True,  # Include background graphics
-        "landscape": False,
+        "landscape": True,
         "margin": {
-            "top": 125,
-            "bottom": 25,
+            "top": 86,
+            "bottom": 5,
             "left": 25,
             "right": 25
         },

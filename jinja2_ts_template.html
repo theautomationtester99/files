@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ page_title }}</title>
+    <title>Test Results</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -19,7 +19,7 @@
         }
         #logo {           
             /* margin-right: auto;             */
-            max-width:150px;
+            max-height:110px;
         }
         #browsimg {           
             /* margin-right: auto;             */
@@ -89,13 +89,20 @@
             border: 1px solid #070707; /* Defines a single border for the table */
             table-layout: auto;
         }
-
+        .fixedwidth {
+            max-width: 150px; /* Set the desired maximum width */
+            word-wrap: break-word; /* Ensures long words wrap */
+            overflow-wrap: break-word;
+        }
         th, td {
             border: 1px solid #070707; /* Applies single border to each cell */
             padding: 5px;
             text-align: left;
             white-space: normal; /* Allows text to wrap */
             word-wrap: break-word; /* Breaks long words if necessary */
+        }
+        .red-cell {
+            background-color: #de2d26;
         }
         th {
             background-color: #f2f2f2; /* Adds a background color to header cells */
@@ -114,83 +121,29 @@
 </head>
 <body>
 
-<div class="testsummaryrow">
-    {% if "passed" in overall_status_text|lower %}
-    <div class="testdescp">
-        <div><b>Test Description:</b></div>       
-        <div>{{ test_description }}</div>
-    </div>
-    <div class="testenvp">
-        <div><b>Browser Details:</b></div>
-        <div>
-            <img id="browsimg" src="{{ browser_img_src }}" alt="{{ browser_img_alt }}">
-        </div>
-        <div><b>Version Details:</b></div>
-        <div>{{ browser_version }}</div>
-        <br>
-        <div><b>Executed Date:</b></div>
-        <div>{{ executed_date }}</div>
-    </div>
-    <div class="teststatusp">
-        <div>{{ overall_status_text }}</div>
-    </div>
-    {% else %}
-    <div class="testdescf">
-        <div><b>Test Description:</b></div>       
-        <div>{{ test_description }}</div>
-    </div>
-    <div class="testenvf">
-        <div><b>Browser Details:</b></div>
-        <div>
-            <img id="browsimg" src="{{ browser_img_src }}" alt="{{ browser_img_alt }}">
-        </div>
-        <div><b>Version Details:</b></div>
-        <div>{{ browser_version }}</div>
-        <br>
-        <div><b>Executed Date:</b></div>
-        <div>{{ executed_date }}</div>
-    </div>
-    <div class="teststatusf">
-        <div>{{ overall_status_text }}</div>
-    </div>
-    {% endif %}
-
-</div>
-
 <table>
     <thead>
         <tr>
             <th>Sno</th>
-            <th>Step</th>
-            <th>Result</th>
+            <th>TC ID</th>
+            <th>Test Description</th>
             <th>Status</th>
+            <th>Browser</th>
         </tr>
     </thead>
     <tbody>
-        {% for key, value in table_data.items() %}
+        {% for value in data %}
         <tr>
-            <td rowspan="{{ value.rowspan }}">{{ value.sno }}</td>
-            <td>{{ value.step }}</td>
-            <td>{{ value.result }}</td>
-            <td>{{ value.overall_step_status }}</td>
+            <td>{{ loop.index }}</td>
+            <td class="fixedwidth">{{ value.tc_id }}</td>
+            <td>{{ value.tc_description.replace('\n', '<br>') | safe }}</td>
+            {% if "failed" in value.Status|lower %}
+            <td class="red-cell">{{ value.Status }}</td>
+            {% else %}
+            <td>{{ value.Status }}</td>
+            {% endif %}
+            <td>{{ value.Browser }}</td>
         </tr>
-        {% if value.sub_steps %}
-        {% for key1, value1 in value.sub_steps.items() %}
-        <tr>
-            <td>{{ value1.sub_step }}</td>
-            <td>
-                {% if value1.sub_step_message %}
-                <span>{{ value1.sub_step_message }}</span>
-                <br>
-                {% endif %}
-                {% if value1.image_src %}
-                <img id="imga" src="{{ value1.image_src }}" alt="{{ value1.image_alt }}">
-                {% endif %}
-            </td>
-            <td>{{ value1.sub_step_status }}</td>
-        </tr>
-        {% endfor %}
-        {% endif %}
         {% endfor %}
     </tbody>
 </table>
